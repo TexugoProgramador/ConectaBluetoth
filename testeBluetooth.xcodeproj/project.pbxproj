@@ -14,6 +14,8 @@
 		D90CFF2321F6915100F3866E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D90CFF2121F6915100F3866E /* LaunchScreen.storyboard */; };
 		D90CFF2E21F6915100F3866E /* testeBluetoothTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D90CFF2D21F6915100F3866E /* testeBluetoothTests.swift */; };
 		D90CFF3921F6915100F3866E /* testeBluetoothUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D90CFF3821F6915100F3866E /* testeBluetoothUITests.swift */; };
+		D91DE65B220228E000F6949E /* BlueToothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91DE65A220228E000F6949E /* BlueToothViewController.swift */; };
+		D91DE65E220228F300F6949E /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D91DE65D220228F300F6949E /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		D90CFF3421F6915100F3866E /* testeBluetoothUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = testeBluetoothUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D90CFF3821F6915100F3866E /* testeBluetoothUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testeBluetoothUITests.swift; sourceTree = "<group>"; };
 		D90CFF3A21F6915100F3866E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D91DE65A220228E000F6949E /* BlueToothViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueToothViewController.swift; sourceTree = "<group>"; };
+		D91DE65D220228F300F6949E /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D91DE65E220228F300F6949E /* CoreBluetooth.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +86,7 @@
 				D90CFF2C21F6915100F3866E /* testeBluetoothTests */,
 				D90CFF3721F6915100F3866E /* testeBluetoothUITests */,
 				D90CFF1621F6914E00F3866E /* Products */,
+				D91DE65C220228F200F6949E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,6 +103,7 @@
 		D90CFF1721F6914E00F3866E /* testeBluetooth */ = {
 			isa = PBXGroup;
 			children = (
+				D91DE65A220228E000F6949E /* BlueToothViewController.swift */,
 				D90CFF1821F6914E00F3866E /* AppDelegate.swift */,
 				D90CFF1A21F6914E00F3866E /* ViewController.swift */,
 				D90CFF1C21F6914E00F3866E /* Main.storyboard */,
@@ -123,6 +130,14 @@
 				D90CFF3A21F6915100F3866E /* Info.plist */,
 			);
 			path = testeBluetoothUITests;
+			sourceTree = "<group>";
+		};
+		D91DE65C220228F200F6949E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D91DE65D220228F300F6949E /* CoreBluetooth.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,6 +272,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D90CFF1B21F6914E00F3866E /* ViewController.swift in Sources */,
+				D91DE65B220228E000F6949E /* BlueToothViewController.swift in Sources */,
 				D90CFF1921F6914E00F3866E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
