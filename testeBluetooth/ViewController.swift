@@ -18,7 +18,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate {
     
     var centralManager: CBCentralManager!
     
-    let serviceCBUUID = CBUUID(string: "0x180A")
+    let serviceCBUUID = CBUUID(string: "0x1800")
     var devicePeripheral: CBPeripheral!
     
     let characteristicCBUUID1 = CBUUID(string: "2A38")

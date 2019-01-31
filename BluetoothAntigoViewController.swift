@@ -1,21 +1,21 @@
 //
-//  BlueToothViewController.swift
+//  BluetoothAntigoViewController.swift
 //  testeBluetooth
 //
-//  Created by humberto Lima on 30/01/19.
+//  Created by humberto Lima on 31/01/19.
 //  Copyright © 2019 humberto Lima. All rights reserved.
 //
 
 import UIKit
 import CoreBluetooth
 
-class BlueToothViewController: UIViewController,CBCentralManagerDelegate, CBPeripheralDelegate {
+class BluetoothAntigoViewController: UIViewController,CBCentralManagerDelegate, CBPeripheralDelegate {
+
     
     let centralQueue: DispatchQueue = DispatchQueue(label: "", attributes: .concurrent)
     var centralManager: CBCentralManager!
     var peripherals = Array<CBPeripheral>()
     
-    var dispositivoSelecionado = CBPeripheral.self
     
     var serviceCBUUID = CBUUID()
     
@@ -45,6 +45,7 @@ class BlueToothViewController: UIViewController,CBCentralManagerDelegate, CBPeri
         }
     }
     
+    
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         peripherals.append(peripheral)
         NotificationCenter.default.post(name: NSNotification.Name("carregaTabela"), object: nil)
@@ -54,10 +55,13 @@ class BlueToothViewController: UIViewController,CBCentralManagerDelegate, CBPeri
         peripheral.delegate = self
         
         if serviceCBUUID.uuidString == "" {
-            print("serviceCBUUID vazio")
-        }else{
             peripheral.discoverServices(nil)
+        }else{
+            peripheral.discoverServices([serviceCBUUID])
+            print(peripheral.services)
         }
+        
+        
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
@@ -70,47 +74,14 @@ class BlueToothViewController: UIViewController,CBCentralManagerDelegate, CBPeri
             return
         }
         for servico in servicos {
+            print(servico)
             serviceCBUUID = servico.uuid
-            peripheral.discoverCharacteristics(nil, for: servico)
         }
     }
-    
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        guard let caracteristicas = service.characteristics else { return }
-        
-        for characteristic in caracteristicas {
-            print(characteristic)
-            
-            if characteristic.properties.contains(.read) {
-//                print("\(characteristic.uuid): Da para fazer leitura")
-                peripheral.readValue(for: characteristic)
-            }
-            
-            if characteristic.properties.contains(.notify) {// se o tipo de componente permitir a leitura  configura o setNotifyValue
-//                print("\(characteristic.uuid): Recebe notificações")
-                peripheral.setNotifyValue(true, for: characteristic)
-            }
-            
-            if characteristic.properties.contains(.write){
-//                print("\(characteristic.uuid): Escreve comando")
-            }
-        }
-    }
-    
-    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        
-        guard let characteristicData = characteristic.value else { return }
-        
-        let byteArray = [UInt8](characteristicData)
-        leituraDeDados(dadosRecebido: byteArray)
-    }
-    
-    func leituraDeDados(dadosRecebido: [UInt8]) {
-        print(dadosRecebido)
-    }
+    //192.168.30.43:4443
 }
 
-extension BlueToothViewController: UITableViewDelegate, UITableViewDataSource {
+extension BluetoothAntigoViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return peripherals.count
     }
@@ -126,6 +97,7 @@ extension BlueToothViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let peripheral = peripherals[indexPath.row]
         centralManager!.connect(peripheral)
+        let serviceCBUUIDT = CBUUID(nsuuid: peripheral.identifier)
+        centralManager.scanForPeripherals(withServices: [serviceCBUUIDT], options: nil)
     }
-    
 }

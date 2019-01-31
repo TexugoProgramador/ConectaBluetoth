@@ -16,6 +16,7 @@
 		D90CFF3921F6915100F3866E /* testeBluetoothUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D90CFF3821F6915100F3866E /* testeBluetoothUITests.swift */; };
 		D91DE65B220228E000F6949E /* BlueToothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91DE65A220228E000F6949E /* BlueToothViewController.swift */; };
 		D91DE65E220228F300F6949E /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D91DE65D220228F300F6949E /* CoreBluetooth.framework */; };
+		D9A1F25622030F7B00FA44A4 /* BluetoothAntigoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9A1F25522030F7B00FA44A4 /* BluetoothAntigoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		D90CFF3A21F6915100F3866E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D91DE65A220228E000F6949E /* BlueToothViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlueToothViewController.swift; sourceTree = "<group>"; };
 		D91DE65D220228F300F6949E /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		D9A1F25522030F7B00FA44A4 /* BluetoothAntigoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothAntigoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 		D90CFF0C21F6914E00F3866E = {
 			isa = PBXGroup;
 			children = (
+				D9A1F25522030F7B00FA44A4 /* BluetoothAntigoViewController.swift */,
 				D90CFF1721F6914E00F3866E /* testeBluetooth */,
 				D90CFF2C21F6915100F3866E /* testeBluetoothTests */,
 				D90CFF3721F6915100F3866E /* testeBluetoothUITests */,
@@ -208,6 +211,11 @@
 				TargetAttributes = {
 					D90CFF1421F6914E00F3866E = {
 						CreatedOnToolsVersion = 10.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					D90CFF2821F6915100F3866E = {
 						CreatedOnToolsVersion = 10.1;
@@ -272,6 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D90CFF1B21F6914E00F3866E /* ViewController.swift in Sources */,
+				D9A1F25622030F7B00FA44A4 /* BluetoothAntigoViewController.swift in Sources */,
 				D91DE65B220228E000F6949E /* BlueToothViewController.swift in Sources */,
 				D90CFF1921F6914E00F3866E /* AppDelegate.swift in Sources */,
 			);
