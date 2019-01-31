@@ -14,12 +14,20 @@ class BlueToothViewController: UIViewController,CBCentralManagerDelegate, CBPeri
     let centralQueue: DispatchQueue = DispatchQueue(label: "", attributes: .concurrent)
     var centralManager: CBCentralManager!
     var peripherals = Array<CBPeripheral>()
+    var peripheralSelecionado: CBPeripheral?
     
     var dispositivoSelecionado = CBPeripheral.self
     
     var serviceCBUUID = CBUUID()
     
+    var characteristicCriada:CBCharacteristic?
+    
     @IBOutlet weak var tabelaDispositivos: UITableView!
+    @IBOutlet weak var tabelaPesagens: UITableView!
+    
+    var arrayPesagem = Array<String>()
+    
+    var podeLer = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,13 +35,23 @@ class BlueToothViewController: UIViewController,CBCentralManagerDelegate, CBPeri
         tabelaDispositivos.delegate = self
         tabelaDispositivos.dataSource = self
         
+        tabelaPesagens.delegate = self
+        tabelaPesagens.dataSource = self
         
         NotificationCenter.default.addObserver(self, selector: #selector(carregaTabela(notification:)), name: NSNotification.Name(rawValue: "carregaTabela"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(carregaTabelaPesagem(notification:)), name: NSNotification.Name(rawValue: "carregaTabelaPesagem"), object: nil)
     }
     
     @objc func carregaTabela(notification: Notification!) {
         DispatchQueue.main.async {
             self.tabelaDispositivos.reloadData()
+        }
+    }
+    
+    @objc func carregaTabelaPesagem(notification: Notification!) {
+        DispatchQueue.main.async {
+            self.tabelaPesagens.reloadData()
         }
     }
     
@@ -82,17 +100,16 @@ class BlueToothViewController: UIViewController,CBCentralManagerDelegate, CBPeri
             print(characteristic)
             
             if characteristic.properties.contains(.read) {
-//                print("\(characteristic.uuid): Da para fazer leitura")
                 peripheral.readValue(for: characteristic)
             }
             
-            if characteristic.properties.contains(.notify) {// se o tipo de componente permitir a leitura  configura o setNotifyValue
-//                print("\(characteristic.uuid): Recebe notificações")
+            if characteristic.properties.contains(.notify) {// se o tipo de componente permitir a leitura
                 peripheral.setNotifyValue(true, for: characteristic)
             }
             
             if characteristic.properties.contains(.write){
-//                print("\(characteristic.uuid): Escreve comando")
+                characteristicCriada = characteristic
+                print("\(characteristic.uuid): Escreve comando")
             }
         }
     }
@@ -105,27 +122,73 @@ class BlueToothViewController: UIViewController,CBCentralManagerDelegate, CBPeri
         leituraDeDados(dadosRecebido: byteArray)
     }
     
-    func leituraDeDados(dadosRecebido: [UInt8]) {
-        print(dadosRecebido)
+    func limparPesagem() {
+        var arr: [UInt8] = [0x05, 0x02, 0x00, 0x50, 0x00, 0x00, 0xae, UInt8.max]
+        let data = Data(buffer: UnsafeBufferPointer(start: &arr, count: arr.count))
+        peripheralSelecionado?.writeValue(data, for: characteristicCriada!, type: CBCharacteristicWriteType.withResponse)
     }
+    
+    @IBAction func comecarPesagem(_ sender: UIButton) {
+        var arr: [UInt8] = [0x05, 0x02, 0x00, 0x50, 0x00, 0x00, 0xae, UInt8.max]
+        let data = Data(buffer: UnsafeBufferPointer(start: &arr, count: arr.count))
+        peripheralSelecionado?.writeValue(data, for: characteristicCriada!, type: CBCharacteristicWriteType.withResponse)
+    }
+    
+    
+    func leituraDeDados(dadosRecebido: [UInt8]) {
+        if dadosRecebido.count >= 20 {
+            if dadosRecebido[17] == 70 {
+                if podeLer {
+                    let pesoAnimal = dadosRecebido[8...14]
+                    exibePeso(pesoBalanca: pesoAnimal)
+                    sleep(1)
+                    limparPesagem()
+                }
+                podeLer = false
+            }else{
+                podeLer = true
+            }
+        }
+    }
+    
+    func exibePeso(pesoBalanca: ArraySlice<UInt8>) {
+        let stringPeso = String(bytes: pesoBalanca, encoding: .utf8)
+        arrayPesagem.append(stringPeso ?? "sem pesagem")
+        NotificationCenter.default.post(name: NSNotification.Name("carregaTabelaPesagem"), object: nil)
+    }
+    
 }
 
 extension BlueToothViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return peripherals.count
+        if tableView == tabelaDispositivos {
+            return peripherals.count
+        }else{
+            return arrayPesagem.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tabelaDispositivos.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let peripheral = peripherals[indexPath.row]
-        cell.textLabel?.text = peripheral.name
-        cell.detailTextLabel?.text = "\(peripheral.identifier)"
-        return cell
+        
+        if tableView == tabelaDispositivos {
+            let cell = tabelaDispositivos.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+            let peripheralTemp = peripherals[indexPath.row]
+            cell.textLabel?.text = peripheralTemp.name
+            cell.detailTextLabel?.text = "\(peripheralTemp.identifier)"
+            return cell
+        }else{
+            let cell = tabelaPesagens.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+            let pesoTemp = arrayPesagem[indexPath.row]
+            cell.textLabel?.text = pesoTemp
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let peripheral = peripherals[indexPath.row]
-        centralManager!.connect(peripheral)
+        if tableView == tabelaDispositivos {
+            peripheralSelecionado = peripherals[indexPath.row]
+            centralManager!.connect(peripheralSelecionado!)
+        }
     }
     
 }
